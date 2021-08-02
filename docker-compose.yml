@@ -1,11 +1,24 @@
 version: '3.0'
 services:
-  backend:
+  admin-backend:
     build:
       context: .
       dockerfile: Dockerfile
+    command: 'python manage.py runserver 0.0.0.0:8000'
     ports:
       - 8000:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  main-backend:
+    build:
+      context: .
+      dockerfile: flask.Dockerfile
+    command: 'python main/main.py'
+    ports:
+      - 8001:5000
     volumes:
       - .:/app
     depends_on:
