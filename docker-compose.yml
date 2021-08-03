@@ -1,6 +1,6 @@
 version: '3.0'
 services:
-  admin-backend:
+  admin:
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,13 +12,33 @@ services:
     depends_on:
       - db
 
-  main-backend:
+  main:
     build:
       context: .
-      dockerfile: flask.Dockerfile
+      dockerfile: Dockerfile
     command: 'python main/main.py'
     ports:
       - 8001:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  admin-queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python consumer.py'
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  main-queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python main/consumer.py'
     volumes:
       - .:/app
     depends_on:
