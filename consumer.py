@@ -1,8 +1,10 @@
 import json
 
+import django
 import pika
 
-from .models import Product
+django.setup()
+from products.models import Product
 
 params = pika.URLParameters('amqp://guest:guest@192.168.3.28:5672/')
 
@@ -17,7 +19,7 @@ def callback(ch, method, properties, body):
     print('Received in admin')
     data = json.loads(body)
     print(data)
-    product = Product.object.get(id=id)
+    product = Product.objects.get(id=data)
     product.likes += 1
     product.save()
     print('Product likes increased!')
